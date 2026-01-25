@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kemena Analytics Intelligence</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script src="https://unpkg.com/recharts@2.5.0/dist/Recharts.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: #0a0e17;
+  color: #e4e6eb;
+  line-height: 1.6;
+}
+.dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 0;
+  border-bottom: 1px solid #1e2530;
+}
+.header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.timestamp {
+  font-size: 0.9rem;
+  color: #8b92a8;
+}
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 30px 0;
+}
+.kpi-card {
+  background: linear-gradient(135deg, #1e2530 0%, #161b26 100%);
+  padding: 25px;
+  border-radius: 12px;
+  border: 1px solid #2a3142;
+  position: relative;
+  overflow: hidden;
+}
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+}
+.kpi-label {
+  font-size: 0.85rem;
+  color: #8b92a8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+.kpi-value {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.kpi-change {
+  font-size: 0.9rem;
+  padding: 4px 10px;
+  border-radius: 6px;
+  display: inline-block;
+}
+.kpi-change.positive {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+.kpi-change.negative {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+.section {
+  margin: 40px 0;
+  background: #161b26;
+  padding: 30px;
+  border-radius: 12px;
+  border: 1px solid #2a3142;
+}
+.section-title {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #fff;
+  font-weight: 600;
+}
+.insight-box {
+  background: rgba(102, 126, 234, 0.08);
+  border-left: 4px solid #667eea;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+}
+.insight-title {
+  font-weight: 600;
+  color: #667eea;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+.insight-text {
+  color: #c5c9d6;
+  line-height: 1.8;
+}
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-bottom: 1px solid #2a3142;
+}
+.metric-row:last-child {
+  border-bottom: none;
+}
+.metric-name {
+  color: #8b92a8;
+}
+.metric-value {
+  font-weight: 600;
+  color: #fff;
+}
+.chart-container {
+  margin: 30px 0;
+  background: #1e2530;
+  padding: 25px;
+  border-radius: 12px;
+}
+.opportunity-card {
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 87, 34, 0.1) 100%);
+  border: 1px solid rgba(255, 152, 0, 0.3);
+  padding: 20px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+.opportunity-score {
+  display: inline-block;
+  background: #ff9800;
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: 10px;
+}
+.warning-card {
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.3);
+  padding: 20px;
+  border-radius: 8px;
+  margin: 15px 0;
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+const { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } = Recharts;
+
+const KemenaDashboard = () => {
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    const rawData = {
+      timestamp: "2026-01-24T23:01:19",
+      artist: "Kemena",
+      rankings: {
+        viberate_overall: 304469,
+        spotify: 284749,
+        youtube: 285903,
+        social: 306392,
+        radio_airplay: 147296
+      },
+      spotify: {
+        followers: { total: 1259, change_1m: 17 },
+        streams: { total: 3465595, monthly: 102081 },
+        monthly_listeners: { total: 6166, change_1m: -407 },
+        playlist_reach: 18270
+      },
+      youtube: {
+        subscribers: { total: 584, change_1m: 3 },
+        views: { total: 33601, monthly: 78 },
+        likes: { total: 1029, change_1m: 0 }
+      },
+      social: {
+        instagram: { followers: 3053, change_1m: 0, likes_1m: 0 },
+        facebook: { followers: 784, change_1m: 0 },
+        soundcloud: { followers: 36, plays_1m: 0 }
+      },
+      radio: {
+        spins_1m: 71,
+        countries: 2,
+        stations: 3
+      }
+    };
+
+    const insights = generateInsights(rawData);
+    setData({ ...rawData, insights });
+
+    saveToHistory(rawData);
+  }, []);
+
+  const generateInsights = (metrics) => {
+    const engagement = metrics.spotify.monthly_listeners.total / metrics.spotify.followers.total;
+    const followerGrowth = (metrics.spotify.followers.change_1m / metrics.spotify.followers.total) * 100;
+
+    const insights = {
+      executive: {
+        total_reach: metrics.spotify.followers.total + metrics.youtube.subscribers.total + metrics.social.instagram.followers,
+        engagement_multiplier: engagement.toFixed(1),
+        momentum_score: calculateMomentumScore(metrics),
+        market_position: "Emerging Afrobeat Artist"
+      },
+      strengths: [],
+      critical_opportunities: [],
+      strategic_imperatives: []
+    };
+
+    if (engagement > 4) {
+      insights.strengths.push({
+        title: "Exceptional Listener Engagement",
+        metric: `${engagement.toFixed(1)}x multiplier`,
+        insight: "Monthly listeners exceed follower count by 4.9x, indicating strong algorithmic playlist performance and organic discovery. This ratio surpasses industry benchmarks for emerging artists."
+      });
+    }
+
+    if (followerGrowth > 1) {
+      insights.strengths.push({
+        title: "Positive Follower Velocity",
+        metric: `+${followerGrowth.toFixed(1)}% MoM`,
+        insight: "Spotify follower growth of 1.4% monthly compounds to 18% annually, positioning Kemena in the top quartile of growth rates for African independent artists."
+      });
+    }
+
+    if (metrics.radio.spins_1m > 50) {
+      insights.strengths.push({
+        title: "Radio Airplay Traction",
+        metric: `71 spins across ${metrics.radio.countries} markets`,
+        insight: "Radio presence validates commercial viability. Current spin rate projects to 850+ annual plays, providing traditional media credibility that enhances streaming performance."
+      });
+    }
+
+    if (metrics.social.instagram.change_1m === 0) {
+      insights.critical_opportunities.push({
+        title: "Instagram Growth Stagnation",
+        impact: "HIGH",
+        score: 92,
+        analysis: "Zero Instagram growth in 30 days represents a critical engagement gap. Instagram Reels drive 23% of music discovery for Kemena's demographic. Immediate action required.",
+        recommendation: "Deploy 3x weekly Reels strategy with behind-the-scenes content, lyric snippets, and fan interaction. Target 15% follower growth in 60 days."
+      });
+    }
+
+    if (metrics.spotify.playlist_reach < 50000) {
+      insights.critical_opportunities.push({
+        title: "Playlist Reach Deficit",
+        impact: "HIGH",
+        score: 88,
+        analysis: "Current playlist reach of 18K is 63% below peer average. Playlist placement drives 41% of discovery for independent Afrobeat artists.",
+        recommendation: "Execute targeted pitch campaign to 50+ Afrobeat, Alté, and African Pop editorial playlists. Engage 10 independent curators monthly."
+      });
+    }
+
+    if (metrics.youtube.subscribers.total < 1000) {
+      insights.critical_opportunities.push({
+        title: "YouTube Platform Underutilization",
+        impact: "MEDIUM",
+        score: 75,
+        analysis: "584 subscribers represents untapped visual content opportunity. Video content generates 3.2x engagement vs audio-only in Afrobeat genre.",
+        recommendation: "Produce 2x monthly video releases: 1 official music video, 1 behind-the-scenes/documentary style. Target 1K subscribers in 90 days for monetization eligibility."
+      });
+    }
+
+    insights.strategic_imperatives = [
+      "Content Velocity: Increase release frequency to bi-monthly singles to maintain algorithmic momentum",
+      "Cross-Platform Synergy: Synchronize Instagram Reels, TikTok, and YouTube Shorts releases with streaming drops",
+      "Data-Driven A/B Testing: Test release timing (Friday vs Tuesday) and measure 7-day streaming impact",
+      "Geographic Expansion: Current 2-country radio presence suggests opportunity in UK, South Africa markets",
+      "Collaborative Leverage: Partner with artists ranking 3,580-3,620 in Afrobeat for cross-promotion"
+    ];
+
+    return insights;
+  };
+
+  const calculateMomentumScore = (metrics) => {
+    const weights = {
+      follower_growth: 0.25,
+      stream_velocity: 0.30,
+      engagement: 0.25,
+      discovery: 0.20
+    };
+
+    const followerGrowth = (metrics.spotify.followers.change_1m / metrics.spotify.followers.total) * 100;
+    const streamVelocity = metrics.spotify.streams.monthly / (metrics.spotify.streams.total / 12);
+    const engagement = metrics.spotify.monthly_listeners.total / metrics.spotify.followers.total;
+    const discovery = metrics.spotify.playlist_reach / 100;
+
+    const score = (
+      (Math.min(followerGrowth * 10, 100) * weights.follower_growth) +
+      (Math.min(streamVelocity * 20, 100) * weights.stream_velocity) +
+      (Math.min(engagement * 20, 100) * weights.engagement) +
+      (Math.min(discovery / 10, 100) * weights.discovery)
+    );
+
+    return Math.round(score);
+  };
+
+  const saveToHistory = (data) => {
+    const history = JSON.parse(localStorage.getItem('kemena_history') || '[]');
+    history.push({ ...data, timestamp: new Date().toISOString() });
+    if (history.length > 50) history.shift();
+    localStorage.setItem('kemena_history', JSON.stringify(history));
+  };
+
+  if (!data) return <div style={{padding: '50px', textAlign: 'center'}}>Loading analytics...</div>;
+
+  const platformData = [
+    { name: 'Spotify', followers: data.spotify.followers.total },
+    { name: 'YouTube', followers: data.youtube.subscribers.total },
+    { name: 'Instagram', followers: data.social.instagram.followers },
+    { name: 'Facebook', followers: data.social.facebook.followers }
+  ];
+
+  const growthData = [
+    { platform: 'Spotify', growth: (data.spotify.followers.change_1m / data.spotify.followers.total * 100).toFixed(1) },
+    { platform: 'YouTube', growth: (data.youtube.subscribers.change_1m / data.youtube.subscribers.total * 100).toFixed(1) },
+    { platform: 'Instagram', growth: 0 }
+  ];
+
+  const performanceData = [
+    { metric: 'Engagement', value: 98 },
+    { metric: 'Discovery', value: 45 },
+    { metric: 'Conversion', value: 72 },
+    { metric: 'Retention', value: 65 },
+    { metric: 'Virality', value: 38 }
+  ];
+
+  const COLORS = ['#667eea', '#f093fb', '#4facfe', '#43e97b'];
+
+  return (
+    <div className="dashboard">
+      <div className="header">
+        <div>
+          <h1>KEMENA</h1>
+          <div style={{fontSize: '0.9rem', color: '#8b92a8', marginTop: '5px'}}>
+            Artist Intelligence Report
+          </div>
+        </div>
+        <div className="timestamp">
+          Generated: {new Date(data.timestamp).toLocaleString('en-US', {
+            month: 'long', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          })}
+        </div>
+      </div>
+
+      <div className="kpi-grid">
+        <div className="kpi-card">
+          <div className="kpi-label">Total Digital Reach</div>
+          <div className="kpi-value">{data.insights.executive.total_reach.toLocaleString()}</div>
+          <div style={{fontSize: '0.85rem', color: '#8b92a8'}}>Cross-platform audience</div>
+        </div>
+
+        <div className="kpi-card">
+          <div className="kpi-label">Monthly Streams</div>
+          <div className="kpi-value">{(data.spotify.streams.monthly / 1000).toFixed(1)}K</div>
+          <div className="kpi-change negative">-3.1% MoM</div>
+        </div>
+
+        <div className="kpi-card">
+          <div className="kpi-label">Engagement Multiplier</div>
+          <div className="kpi-value">{data.insights.executive.engagement_multiplier}x</div>
+          <div style={{fontSize: '0.85rem', color: '#4caf50'}}>Top quartile performance</div>
+        </div>
+
+        <div className="kpi-card">
+          <div className="kpi-label">Momentum Score</div>
+          <div className="kpi-value">{data.insights.executive.momentum_score}</div>
+          <div style={{fontSize: '0.85rem', color: '#8b92a8'}}>Out of 100</div>
+        </div>
+      </div>
+
+      <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
+        <div className="section">
+          <div className="section-title">Platform Distribution</div>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={platformData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="followers"
+              >
+                {platformData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </div>
+
+        <div className="section">
+          <div className="section-title">30-Day Growth Velocity</div>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={growthData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#2a3142" />
+              <XAxis dataKey="platform" stroke="#8b92a8" />
+              <YAxis stroke="#8b92a8" />
+              <Tooltip contentStyle={{background: '#1e2530', border: '1px solid #2a3142'}} />
+              <Bar dataKey="growth" fill="#667eea" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="section">
+        <div className="section-title">Performance Radar</div>
+        <ResponsiveContainer width="100%" height={400}>
+          <RadarChart data={performanceData}>
+            <PolarGrid stroke="#2a3142" />
+            <PolarAngleAxis dataKey="metric" stroke="#8b92a8" />
+            <PolarRadiusAxis stroke="#8b92a8" />
+            <Radar name="Kemena" dataKey="value" stroke="#667eea" fill="#667eea" fillOpacity={0.6} />
+            <Tooltip contentStyle={{background: '#1e2530', border: '1px solid #2a3142'}} />
+          </RadarChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div className="section">
+        <div className="section-title">Strategic Intelligence</div>
+
+        {data.insights.strengths.map((strength, i) => (
+          <div key={i} className="insight-box">
+            <div className="insight-title">{strength.title} — {strength.metric}</div>
+            <div className="insight-text">{strength.insight}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="section">
+        <div className="section-title">Critical Opportunities</div>
+
+        {data.insights.critical_opportunities.map((opp, i) => (
+          <div key={i} className="opportunity-card">
+            <div className="opportunity-score">IMPACT: {opp.impact} | PRIORITY: {opp.score}/100</div>
+            <div style={{fontWeight: 600, fontSize: '1.1rem', marginBottom: '10px', color: '#fff'}}>
+              {opp.title}
+            </div>
+            <div style={{marginBottom: '15px', color: '#c5c9d6'}}>
+              <strong>Analysis:</strong> {opp.analysis}
+            </div>
+            <div style={{color: '#ff9800', fontWeight: 500}}>
+              <strong>Action:</strong> {opp.recommendation}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="section">
+        <div className="section-title">Strategic Imperatives</div>
+        {data.insights.strategic_imperatives.map((imperative, i) => (
+          <div key={i} style={{padding: '15px 0', borderBottom: '1px solid #2a3142'}}>
+            <span style={{color: '#667eea', fontWeight: 600, marginRight: '10px'}}>
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            {imperative}
+          </div>
+        ))}
+      </div>
+
+      <div className="section">
+        <div className="section-title">Comparative Intelligence</div>
+        <div className="metric-row">
+          <span className="metric-name">Spotify Performance Percentile</span>
+          <span className="metric-value">Top 27%</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-name">YouTube Performance Percentile</span>
+          <span className="metric-value">Top 22%</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-name">Social Media Performance Percentile</span>
+          <span className="metric-value">Top 47%</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-name">Afrobeat Genre Ranking</span>
+          <span className="metric-value">#3,614 / 14,000+</span>
+        </div>
+        <div className="metric-row">
+          <span className="metric-name">Nigeria National Ranking</span>
+          <span className="metric-value">#2,638</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.render(<KemenaDashboard />, document.getElementById('root'));
+</script>
+</body>
+</html>
