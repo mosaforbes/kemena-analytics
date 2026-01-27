@@ -25,9 +25,7 @@
     "type": "git",
     "url": "https://github.com/mosaforbes/kemena-analytics.git"
   },
-  "devDependencies": {
-    "comment": "Development tools can be added as needed"
-  },
+  "devDependencies": {},
   "engines": {
     "node": ">=14.0.0"
   }
