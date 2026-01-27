@@ -1,0 +1,60 @@
+{
+  "timestamp": "2026-01-24T23:01:19",
+  "artist": "Kemena",
+  "rankings": {
+    "viberate_overall": 304469,
+    "spotify": 284749,
+    "youtube": 285903,
+    "social": 306392,
+    "radio_airplay": 147296
+  },
+  "spotify": {
+    "followers": {
+      "total": 1259,
+      "change_1m": 17
+    },
+    "streams": {
+      "total": 3465595,
+      "monthly": 102081
+    },
+    "monthly_listeners": {
+      "total": 6166,
+      "change_1m": -407
+    },
+    "playlist_reach": 18270
+  },
+  "youtube": {
+    "subscribers": {
+      "total": 584,
+      "change_1m": 3
+    },
+    "views": {
+      "total": 33601,
+      "monthly": 78
+    },
+    "likes": {
+      "total": 1029,
+      "change_1m": 0
+    }
+  },
+  "social": {
+    "instagram": {
+      "followers": 3053,
+      "change_1m": 0,
+      "likes_1m": 0
+    },
+    "facebook": {
+      "followers": 784,
+      "change_1m": 0
+    },
+    "soundcloud": {
+      "followers": 36,
+      "plays_1m": 0
+    }
+  },
+  "radio": {
+    "spins_1m": 71,
+    "countries": 2,
+    "stations": 3
+  }
+}

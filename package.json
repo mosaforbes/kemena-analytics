@@ -1,0 +1,34 @@
+{
+  "name": "kemena-analytics",
+  "version": "1.0.0",
+  "description": "Kemena - AI-powered Artist Intelligence Dashboard for data-driven music career growth",
+  "main": "index.html",
+  "type": "module",
+  "scripts": {
+    "start": "npx http-server -p 8000 --cors",
+    "dev": "npx http-server -p 8000 --cors -c-1",
+    "build": "echo 'No build step required - static HTML'",
+    "analyze": "echo 'Static analysis tools can be added here'"
+  },
+  "keywords": [
+    "artist",
+    "analytics",
+    "music",
+    "dashboard",
+    "intelligence",
+    "afrobeat",
+    "kemena"
+  ],
+  "author": "Kemena Analytics Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mosaforbes/kemena-analytics.git"
+  },
+  "devDependencies": {
+    "comment": "Development tools can be added as needed"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
