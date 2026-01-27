@@ -252,3 +252,109 @@ function formatCampaignMetrics(metrics) {
     }
   };
 }
+
+/**
+ * Determine performance status based on growth percentage
+ * @param {number} changePercent - Change percentage
+ * @returns {Object} Status object with type and label
+ */
+function getPerformanceStatus(changePercent) {
+  if (changePercent >= 10) {
+    return { type: 'trending', label: 'Trending' };
+  } else if (changePercent >= -10) {
+    return { type: 'stable', label: 'Stable' };
+  } else {
+    return { type: 'declining', label: 'Declining' };
+  }
+}
+
+/**
+ * Get metric tooltip explanation
+ * @param {string} metricName - Name of the metric
+ * @returns {string} Tooltip text
+ */
+function getMetricTooltip(metricName) {
+  const tooltips = {
+    'Spotify Followers': 'Growing fanbase on Spotify platform',
+    'Monthly Listeners': 'People listening to your music in the last 30 days',
+    'YouTube Subscribers': 'Engaged audience on your YouTube channel',
+    'YouTube Views': 'Total video views across your channel',
+    'Instagram Followers': 'Growing community on Instagram',
+    'Instagram Engagement': 'Average engagement rate on your posts',
+    'TikTok Followers': 'Followers on your TikTok profile',
+    'TikTok Views': 'Total video views on TikTok',
+    'Playlist Adds': 'How many playlists added your song',
+    'Radio Spins': 'Radio stations playing your music',
+    'Saves': 'People saving your music to their library',
+    'Streams': 'Total streams across all platforms',
+    'Engagement Ratio': 'Monthly listeners compared to followers (higher is better)',
+    'Momentum Score': 'Overall performance health (0-100 scale)'
+  };
+  return tooltips[metricName] || 'Performance metric';
+}
+
+/**
+ * Calculate campaign status and progress
+ * @param {Object} campaign - Campaign object
+ * @returns {Object} Status object with label, progress, and color
+ */
+function getCampaignStatus(campaign) {
+  const now = new Date();
+  const startDate = new Date(campaign.startDate);
+  const endDate = new Date(campaign.endDate);
+  const totalDuration = (endDate - startDate) / (1000 * 60 * 60 * 24);
+  const elapsed = (now - startDate) / (1000 * 60 * 60 * 24);
+  const progressPercent = Math.min((elapsed / totalDuration) * 100, 100);
+  
+  return {
+    daysRemaining: Math.max(0, Math.ceil((endDate - now) / (1000 * 60 * 60 * 24))),
+    progressPercent: Math.round(progressPercent),
+    isActive: now >= startDate && now <= endDate,
+    isComplete: now > endDate
+  };
+}
+
+/**
+ * Determine AI confidence level for recommendations
+ * @param {number} score - Confidence score (0-100)
+ * @returns {Object} Confidence object with level and reason
+ */
+function getConfidenceLevel(score) {
+  if (score >= 85) {
+    return { 
+      level: 'High', 
+      scoreDisplay: `${Math.round(score)}%`,
+      emoji: '✓' 
+    };
+  } else if (score >= 70) {
+    return { 
+      level: 'Good', 
+      scoreDisplay: `${Math.round(score)}%`,
+      emoji: '○' 
+    };
+  } else {
+    return { 
+      level: 'Monitor', 
+      scoreDisplay: `${Math.round(score)}%`,
+      emoji: '?' 
+    };
+  }
+}
+
+/**
+ * Format time elapsed for data freshness
+ * @param {Date} lastUpdate - Last update timestamp
+ * @returns {string} Human-readable time difference
+ */
+function getTimeSinceUpdate(lastUpdate) {
+  const now = new Date();
+  const diffMs = now - lastUpdate;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  return `${diffDays}d ago`;
+}

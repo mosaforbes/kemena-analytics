@@ -501,6 +501,211 @@ body {
   color: #f44336;
 }
 
+/* Tooltip System */
+.tooltip-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(102, 126, 234, 0.3);
+  color: #667eea;
+  font-size: 0.75rem;
+  font-weight: bold;
+  cursor: help;
+  margin-left: 6px;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.tooltip-icon:hover {
+  background: rgba(102, 126, 234, 0.6);
+  transform: scale(1.1);
+}
+
+.tooltip-box {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #161b26;
+  border: 1px solid #667eea;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: #e4e6eb;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 8px;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+  pointer-events: none;
+}
+
+.tooltip-icon:hover .tooltip-box {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Performance Badge */
+.performance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.performance-badge.trending {
+  background: rgba(76, 175, 80, 0.15);
+  color: #4caf50;
+}
+
+.performance-badge.trending::before {
+  content: '📈';
+}
+
+.performance-badge.stable {
+  background: rgba(255, 193, 7, 0.15);
+  color: #ffc107;
+}
+
+.performance-badge.stable::before {
+  content: '➡️';
+}
+
+.performance-badge.declining {
+  background: rgba(244, 67, 54, 0.15);
+  color: #f44336;
+}
+
+.performance-badge.declining::before {
+  content: '📉';
+}
+
+/* Data Freshness Indicator */
+.freshness-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: #8b92a8;
+  padding: 8px 12px;
+  background: rgba(102, 126, 234, 0.08);
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.freshness-indicator::before {
+  content: '🕐';
+  font-size: 0.9rem;
+}
+
+.freshness-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #4caf50;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Campaign Status Badge */
+.campaign-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(102, 126, 234, 0.2));
+  border: 1px solid rgba(76, 175, 80, 0.4);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4caf50;
+  margin-bottom: 12px;
+}
+
+.campaign-status-badge::before {
+  content: '🚀';
+  font-size: 0.9rem;
+}
+
+.campaign-progress-inline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #8b92a8;
+  margin-top: 4px;
+}
+
+.campaign-progress-bar {
+  width: 40px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.campaign-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+/* Confidence Score */
+.confidence-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: rgba(102, 126, 234, 0.15);
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: #667eea;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.confidence-badge::before {
+  content: '🤖';
+  font-size: 0.85rem;
+}
+
+.confidence-score {
+  color: #4caf50;
+  font-weight: 700;
+}
+
+.confidence-reason {
+  display: block;
+  font-size: 0.75rem;
+  color: #8b92a8;
+  margin-top: 4px;
+  font-weight: normal;
+}
+
+/* Help Icon Animation */
+@keyframes helpBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-2px); }
+}
+
+.help-icon {
+  animation: helpBounce 2s infinite;
+}
+
 @media (max-width: 768px) {
   .campaign-history-card {
     grid-template-columns: 1fr;
@@ -513,5 +718,19 @@ body {
 
   .comparison-arrow {
     transform: rotate(90deg);
+  }
+
+  .tooltip-box {
+    white-space: normal;
+    max-width: 150px;
+  }
+
+  .freshness-indicator {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .performance-badge {
+    margin-top: 6px;
   }
 }
