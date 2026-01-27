@@ -7,6 +7,15 @@
 ![Cost](https://img.shields.io/badge/cost-$5%2Fmonth-brightgreen)
 ![Version](https://img.shields.io/badge/version-2.0.0-blue)
 
+## 📍 Current Status
+
+- ✅ **Backend:** Live on Railway
+- ✅ **Database:** PostgreSQL connected
+- ✅ **Frontend:** Ready for integration
+- ⏳ **Configuration:** Awaiting your input
+
+**→ [QUICK_START.md](QUICK_START.md) for immediate next steps (5 minutes)**
+
 ## 🎯 What's New (Version 2.0)
 
 ✨ **Backend API** - REST endpoints for metrics and analytics  
