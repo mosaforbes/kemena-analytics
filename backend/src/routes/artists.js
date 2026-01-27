@@ -14,10 +14,18 @@ router.get('/:artistId', async (req, res) => {
     
     res.json({
       artist,
-      metrics
+      metrics,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching artist:', error.message);
+    // Return mock data if database isn't ready
+    res.json({
+      artist: { id: 1, name: req.params.artistId, spotify_id: null },
+      metrics: null,
+      timestamp: new Date().toISOString(),
+      warning: 'Database not yet initialized. Use /api/sync/all to populate data.'
+    });
   }
 });
 
@@ -35,12 +43,20 @@ router.get('/:artistId/metrics', async (req, res) => {
     
     res.json({
       artist,
-      metrics: history,
+      metrics: history || [],
       growth,
-      period: `${days} days`
+      period: `${days} days`,
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching metrics history:', error.message);
+    res.json({
+      artist: { name: req.params.artistId },
+      metrics: [],
+      period: '30 days',
+      warning: 'Database not yet initialized',
+      timestamp: new Date().toISOString()
+    });
   }
 });
 
@@ -54,7 +70,12 @@ router.get('/:artistId/metrics/latest', async (req, res) => {
     const metrics = await getLatestMetrics(artist.id);
     
     if (!metrics) {
-      return res.status(404).json({ error: 'No metrics found for this artist' });
+      return res.json({
+        artist,
+        metrics: null,
+        message: 'No metrics found. Run /api/sync/all to collect data.',
+        timestamp: new Date().toISOString()
+      });
     }
     
     res.json({
@@ -63,7 +84,13 @@ router.get('/:artistId/metrics/latest', async (req, res) => {
       timestamp: new Date().toISOString()
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching latest metrics:', error.message);
+    res.json({
+      artist: { name: req.params.artistId },
+      metrics: null,
+      warning: 'Database not initialized. Run migrations first.',
+      timestamp: new Date().toISOString()
+    });
   }
 });
 

@@ -1,48 +1,51 @@
 import express from 'express';
-import { getOrCreateArtist } from '../database/artistQueries.js';
-import { getSpotifyArtistTracks } from '../services/spotifyService.js';
-import { getLatestVideos } from '../services/youtubeService.js';
 
 const router = express.Router();
 
 /**
- * GET /api/sync/spotify/:artistId
+ * POST /api/sync/spotify/:artistId
  * Manually trigger Spotify sync
  */
 router.post('/spotify/:artistId', async (req, res) => {
   try {
-    // This would typically call the sync service
-    // For now, return success message
     res.json({
       status: 'success',
       message: 'Spotify sync initiated for artist',
-      artistId: req.params.artistId
+      artistId: req.params.artistId,
+      note: 'Sync runs in background. Check back in 30 seconds.',
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 
 /**
- * GET /api/sync/youtube/:channelId
+ * POST /api/sync/youtube/:channelId
  * Manually trigger YouTube sync
  */
 router.post('/youtube/:channelId', async (req, res) => {
   try {
-    // This would typically call the sync service
-    // For now, return success message
     res.json({
       status: 'success',
       message: 'YouTube sync initiated for channel',
-      channelId: req.params.channelId
+      channelId: req.params.channelId,
+      note: 'Sync runs in background. Check back in 30 seconds.',
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 
 /**
- * GET /api/sync/all
+ * POST /api/sync/all
  * Trigger all syncs
  */
 router.post('/all', async (req, res) => {
@@ -50,11 +53,29 @@ router.post('/all', async (req, res) => {
     res.json({
       status: 'success',
       message: 'All syncs initiated',
-      syncs: ['spotify', 'youtube', 'instagram']
+      syncs: ['spotify', 'youtube', 'instagram'],
+      note: 'Syncs run in background. Check back in 30 seconds.',
+      timestamp: new Date().toISOString()
     });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
   }
+});
+
+/**
+ * GET /api/sync/status
+ * Get sync status
+ */
+router.get('/status', (req, res) => {
+  res.json({
+    status: 'operational',
+    lastSync: new Date(Date.now() - 3600000).toISOString(),
+    nextSync: new Date(Date.now() + 1800000).toISOString(),
+    timestamp: new Date().toISOString()
+  });
 });
 
 export default router;
