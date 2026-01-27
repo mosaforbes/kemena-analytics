@@ -212,3 +212,43 @@ function formatNumber(num) {
 function formatPercent(value, decimals = 1) {
   return `${value.toFixed(decimals)}%`;
 }
+/**
+ * Calculate days running for a campaign
+ * @param {string} startDate - Campaign start date (ISO format)
+ * @returns {number} Days elapsed
+ */
+function calculateCampaignDays(startDate) {
+  return Math.floor((new Date() - new Date(startDate)) / (1000 * 60 * 60 * 24));
+}
+
+/**
+ * Calculate progress percentage for campaign metrics
+ * @param {number} current - Current value
+ * @param {number} goal - Goal value
+ * @returns {number} Progress percentage (0-100)
+ */
+function calculateCampaignProgress(current, goal) {
+  return Math.min((current / goal) * 100, 100);
+}
+
+/**
+ * Format campaign metrics for display
+ * @param {Object} metrics - Campaign metrics object
+ * @returns {Object} Formatted metrics
+ */
+function formatCampaignMetrics(metrics) {
+  return {
+    streams: {
+      ...metrics.streams,
+      progress: calculateCampaignProgress(metrics.streams.current, metrics.streams.goal)
+    },
+    playlistAdds: {
+      ...metrics.playlistAdds,
+      progress: calculateCampaignProgress(metrics.playlistAdds.current, metrics.playlistAdds.goal)
+    },
+    saves: {
+      ...metrics.saves,
+      progress: calculateCampaignProgress(metrics.saves.current, metrics.saves.goal)
+    }
+  };
+}

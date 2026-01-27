@@ -56,5 +56,68 @@
     "spins_1m": 71,
     "countries": 2,
     "stations": 3
+  },
+  "campaigns": {
+    "active": {
+      "song": "Suzana",
+      "featuring": "Dwin the Stoic",
+      "startDate": "2025-12-16",
+      "endDate": null,
+      "targetWeeks": 2,
+      "metrics": {
+        "streams": { "start": 0, "current": 1250, "goal": 5000 },
+        "playlistAdds": { "start": 0, "current": 3, "goal": 10 },
+        "saves": { "start": 0, "current": 89, "goal": 500 }
+      },
+      "platforms": ["Spotify", "Apple Music", "Audiomack"],
+      "notes": "Focus on playlist pitching and social media push"
+    },
+    "history": [
+      {
+        "song": "Casablanca",
+        "featuring": null,
+        "startDate": "2025-12-08",
+        "endDate": "2025-12-16",
+        "duration": 8,
+        "metrics": {
+          "streams": { "before": 45200, "after": 52800, "change": 16.8 },
+          "playlistAdds": { "before": 12, "after": 18, "change": 50 },
+          "saves": { "before": 1890, "after": 2340, "change": 23.8 },
+          "radioSpins": { "before": 45, "after": 71, "change": 57.8 }
+        },
+        "result": "success",
+        "insights": "Strong radio pickup in Nigeria. Playlist reach expanded by 6 new curators."
+      },
+      {
+        "song": "Midnight Dreams",
+        "featuring": null,
+        "startDate": "2025-11-20",
+        "endDate": "2025-12-07",
+        "duration": 17,
+        "metrics": {
+          "streams": { "before": 38500, "after": 45200, "change": 17.4 },
+          "playlistAdds": { "before": 8, "after": 12, "change": 50 },
+          "saves": { "before": 1450, "after": 1890, "change": 30.3 },
+          "radioSpins": { "before": 28, "after": 45, "change": 60.7 }
+        },
+        "result": "success",
+        "insights": "Extended campaign due to growing momentum. Broke into 2 new editorial playlists."
+      },
+      {
+        "song": "Lagos Nights",
+        "featuring": "Temi Otedola",
+        "startDate": "2025-11-01",
+        "endDate": "2025-11-19",
+        "duration": 18,
+        "metrics": {
+          "streams": { "before": 28900, "after": 38500, "change": 33.2 },
+          "playlistAdds": { "before": 5, "after": 8, "change": 60 },
+          "saves": { "before": 980, "after": 1450, "change": 48 },
+          "radioSpins": { "before": 12, "after": 28, "change": 133.3 }
+        },
+        "result": "success",
+        "insights": "Collaboration boosted cross-audience reach. TikTok challenge drove 40% of new streams."
+      }
+    ]
   }
 }
