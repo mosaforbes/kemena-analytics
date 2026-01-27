@@ -167,6 +167,195 @@ body {
   border-radius: 8px;
   margin: 15px 0;
 }
+
+/* Campaign Tracker Styles */
+.campaign-active {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(56, 142, 60, 0.1) 100%);
+  border: 2px solid rgba(76, 175, 80, 0.5);
+  padding: 25px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.campaign-active::before {
+  content: 'LIVE';
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: #4caf50;
+  color: #000;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.campaign-song-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 5px;
+}
+.campaign-featuring {
+  font-size: 1rem;
+  color: #8b92a8;
+  margin-bottom: 15px;
+}
+.campaign-meta {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-top: 15px;
+}
+.campaign-meta-item {
+  display: flex;
+  flex-direction: column;
+}
+.campaign-meta-label {
+  font-size: 0.75rem;
+  color: #8b92a8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.campaign-meta-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+.campaign-history-card {
+  background: #1e2530;
+  border: 1px solid #2a3142;
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 15px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 20px;
+  align-items: center;
+}
+.campaign-history-card:hover {
+  border-color: #667eea;
+  transition: border-color 0.2s;
+}
+.campaign-history-song {
+  font-weight: 600;
+  color: #fff;
+  font-size: 1.1rem;
+}
+.campaign-history-dates {
+  font-size: 0.85rem;
+  color: #8b92a8;
+  margin-top: 4px;
+}
+.campaign-stat {
+  text-align: center;
+}
+.campaign-stat-value {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+}
+.campaign-stat-label {
+  font-size: 0.75rem;
+  color: #8b92a8;
+  text-transform: uppercase;
+}
+.campaign-stat-change {
+  font-size: 0.8rem;
+  margin-top: 4px;
+}
+.campaign-stat-change.positive { color: #4caf50; }
+.campaign-stat-change.negative { color: #f44336; }
+.campaign-timeline {
+  display: flex;
+  gap: 0;
+  margin-top: 30px;
+  position: relative;
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+.campaign-timeline::before {
+  content: '';
+  position: absolute;
+  top: 25px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #2a3142;
+  z-index: 0;
+}
+.timeline-item {
+  flex: 1;
+  min-width: 150px;
+  position: relative;
+  text-align: center;
+  padding-top: 40px;
+}
+.timeline-dot {
+  position: absolute;
+  top: 17px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #667eea;
+  border: 3px solid #0a0e17;
+  z-index: 1;
+}
+.timeline-dot.active {
+  background: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+.timeline-dot.completed {
+  background: #667eea;
+}
+.timeline-song {
+  font-weight: 600;
+  color: #fff;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+.timeline-dates {
+  font-size: 0.75rem;
+  color: #8b92a8;
+}
+.campaign-comparison {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 20px;
+  align-items: center;
+  margin-top: 20px;
+}
+.comparison-box {
+  background: #1e2530;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+}
+.comparison-label {
+  font-size: 0.8rem;
+  color: #8b92a8;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.comparison-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+.comparison-arrow {
+  font-size: 2rem;
+  color: #4caf50;
+}
+.comparison-arrow.negative {
+  color: #f44336;
+}
 </style>
 </head>
 <body>
@@ -210,6 +399,69 @@ const KemenaDashboard = () => {
         spins_1m: 71,
         countries: 2,
         stations: 3
+      },
+      campaigns: {
+        active: {
+          song: "Suzana",
+          featuring: "Dwin the Stoic",
+          startDate: "2025-12-16",
+          endDate: null,
+          targetWeeks: 2,
+          metrics: {
+            streams: { start: 0, current: 1250, goal: 5000 },
+            playlistAdds: { start: 0, current: 3, goal: 10 },
+            saves: { start: 0, current: 89, goal: 500 }
+          },
+          platforms: ["Spotify", "Apple Music", "Audiomack"],
+          notes: "Focus on playlist pitching and social media push"
+        },
+        history: [
+          {
+            song: "Casablanca",
+            featuring: null,
+            startDate: "2025-12-08",
+            endDate: "2025-12-16",
+            duration: 8,
+            metrics: {
+              streams: { before: 45200, after: 52800, change: 16.8 },
+              playlistAdds: { before: 12, after: 18, change: 50 },
+              saves: { before: 1890, after: 2340, change: 23.8 },
+              radioSpins: { before: 45, after: 71, change: 57.8 }
+            },
+            result: "success",
+            insights: "Strong radio pickup in Nigeria. Playlist reach expanded by 6 new curators."
+          },
+          {
+            song: "Midnight Dreams",
+            featuring: null,
+            startDate: "2025-11-20",
+            endDate: "2025-12-07",
+            duration: 17,
+            metrics: {
+              streams: { before: 38500, after: 45200, change: 17.4 },
+              playlistAdds: { before: 8, after: 12, change: 50 },
+              saves: { before: 1450, after: 1890, change: 30.3 },
+              radioSpins: { before: 28, after: 45, change: 60.7 }
+            },
+            result: "success",
+            insights: "Extended campaign due to growing momentum. Broke into 2 new editorial playlists."
+          },
+          {
+            song: "Lagos Nights",
+            featuring: "Temi Otedola",
+            startDate: "2025-11-01",
+            endDate: "2025-11-19",
+            duration: 18,
+            metrics: {
+              streams: { before: 28900, after: 38500, change: 33.2 },
+              playlistAdds: { before: 5, after: 8, change: 60 },
+              saves: { before: 980, after: 1450, change: 48 },
+              radioSpins: { before: 12, after: 28, change: 133.3 }
+            },
+            result: "success",
+            insights: "Collaboration boosted cross-audience reach. TikTok challenge drove 40% of new streams."
+          }
+        ]
       }
     };
     
@@ -395,6 +647,191 @@ const KemenaDashboard = () => {
           <div className="kpi-value">{data.insights.executive.momentum_score}</div>
           <div style={{fontSize: '0.85rem', color: '#8b92a8'}}>Out of 100</div>
         </div>
+      </div>
+
+      {/* Campaign Tracker Section */}
+      <div className="section">
+        <div className="section-title">Campaign Tracker</div>
+
+        {/* Active Campaign */}
+        {data.campaigns.active && (
+          <div className="campaign-active">
+            <div className="campaign-song-title">{data.campaigns.active.song}</div>
+            {data.campaigns.active.featuring && (
+              <div className="campaign-featuring">ft. {data.campaigns.active.featuring}</div>
+            )}
+            <div className="campaign-meta">
+              <div className="campaign-meta-item">
+                <span className="campaign-meta-label">Started</span>
+                <span className="campaign-meta-value">
+                  {new Date(data.campaigns.active.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                </span>
+              </div>
+              <div className="campaign-meta-item">
+                <span className="campaign-meta-label">Days Running</span>
+                <span className="campaign-meta-value">
+                  {Math.floor((new Date() - new Date(data.campaigns.active.startDate)) / (1000 * 60 * 60 * 24))}
+                </span>
+              </div>
+              <div className="campaign-meta-item">
+                <span className="campaign-meta-label">Target</span>
+                <span className="campaign-meta-value">{data.campaigns.active.targetWeeks} weeks</span>
+              </div>
+              <div className="campaign-meta-item">
+                <span className="campaign-meta-label">Platforms</span>
+                <span className="campaign-meta-value">{data.campaigns.active.platforms.join(', ')}</span>
+              </div>
+            </div>
+
+            {/* Progress Bars */}
+            <div style={{marginTop: '25px'}}>
+              <div style={{marginBottom: '15px'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '5px'}}>
+                  <span style={{fontSize: '0.85rem', color: '#8b92a8'}}>Streams Progress</span>
+                  <span style={{fontSize: '0.85rem', color: '#fff'}}>
+                    {data.campaigns.active.metrics.streams.current.toLocaleString()} / {data.campaigns.active.metrics.streams.goal.toLocaleString()}
+                  </span>
+                </div>
+                <div style={{background: '#2a3142', borderRadius: '10px', height: '10px', overflow: 'hidden'}}>
+                  <div style={{
+                    background: 'linear-gradient(90deg, #4caf50, #8bc34a)',
+                    height: '100%',
+                    width: `${Math.min((data.campaigns.active.metrics.streams.current / data.campaigns.active.metrics.streams.goal) * 100, 100)}%`,
+                    borderRadius: '10px',
+                    transition: 'width 0.3s'
+                  }}></div>
+                </div>
+              </div>
+              <div style={{marginBottom: '15px'}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '5px'}}>
+                  <span style={{fontSize: '0.85rem', color: '#8b92a8'}}>Playlist Adds</span>
+                  <span style={{fontSize: '0.85rem', color: '#fff'}}>
+                    {data.campaigns.active.metrics.playlistAdds.current} / {data.campaigns.active.metrics.playlistAdds.goal}
+                  </span>
+                </div>
+                <div style={{background: '#2a3142', borderRadius: '10px', height: '10px', overflow: 'hidden'}}>
+                  <div style={{
+                    background: 'linear-gradient(90deg, #667eea, #764ba2)',
+                    height: '100%',
+                    width: `${Math.min((data.campaigns.active.metrics.playlistAdds.current / data.campaigns.active.metrics.playlistAdds.goal) * 100, 100)}%`,
+                    borderRadius: '10px'
+                  }}></div>
+                </div>
+              </div>
+              <div>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '5px'}}>
+                  <span style={{fontSize: '0.85rem', color: '#8b92a8'}}>Saves</span>
+                  <span style={{fontSize: '0.85rem', color: '#fff'}}>
+                    {data.campaigns.active.metrics.saves.current} / {data.campaigns.active.metrics.saves.goal}
+                  </span>
+                </div>
+                <div style={{background: '#2a3142', borderRadius: '10px', height: '10px', overflow: 'hidden'}}>
+                  <div style={{
+                    background: 'linear-gradient(90deg, #ff9800, #ff5722)',
+                    height: '100%',
+                    width: `${Math.min((data.campaigns.active.metrics.saves.current / data.campaigns.active.metrics.saves.goal) * 100, 100)}%`,
+                    borderRadius: '10px'
+                  }}></div>
+                </div>
+              </div>
+            </div>
+
+            {data.campaigns.active.notes && (
+              <div style={{marginTop: '20px', padding: '12px', background: 'rgba(102, 126, 234, 0.1)', borderRadius: '8px', fontSize: '0.9rem', color: '#c5c9d6'}}>
+                <strong style={{color: '#667eea'}}>Strategy:</strong> {data.campaigns.active.notes}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Campaign Timeline */}
+        <div style={{marginTop: '30px', marginBottom: '30px'}}>
+          <div style={{fontSize: '1.1rem', fontWeight: '600', color: '#fff', marginBottom: '15px'}}>Campaign Timeline</div>
+          <div className="campaign-timeline">
+            {[...data.campaigns.history].reverse().map((campaign, i) => (
+              <div key={i} className="timeline-item">
+                <div className={`timeline-dot completed`}></div>
+                <div className="timeline-song">{campaign.song}</div>
+                <div className="timeline-dates">
+                  {new Date(campaign.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(campaign.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                </div>
+              </div>
+            ))}
+            {data.campaigns.active && (
+              <div className="timeline-item">
+                <div className="timeline-dot active"></div>
+                <div className="timeline-song">{data.campaigns.active.song}</div>
+                <div className="timeline-dates">
+                  {new Date(data.campaigns.active.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - Present
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Campaign History */}
+        <div style={{marginTop: '30px'}}>
+          <div style={{fontSize: '1.1rem', fontWeight: '600', color: '#fff', marginBottom: '15px'}}>Campaign History</div>
+          {data.campaigns.history.map((campaign, i) => (
+            <div key={i} className="campaign-history-card">
+              <div>
+                <div className="campaign-history-song">
+                  {campaign.song}
+                  {campaign.featuring && <span style={{color: '#8b92a8', fontWeight: '400'}}> ft. {campaign.featuring}</span>}
+                </div>
+                <div className="campaign-history-dates">
+                  {new Date(campaign.startDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - {new Date(campaign.endDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })} ({campaign.duration} days)
+                </div>
+              </div>
+              <div className="campaign-stat">
+                <div className="campaign-stat-value">{campaign.metrics.streams.after.toLocaleString()}</div>
+                <div className="campaign-stat-label">Streams</div>
+                <div className={`campaign-stat-change ${campaign.metrics.streams.change >= 0 ? 'positive' : 'negative'}`}>
+                  {campaign.metrics.streams.change >= 0 ? '+' : ''}{campaign.metrics.streams.change}%
+                </div>
+              </div>
+              <div className="campaign-stat">
+                <div className="campaign-stat-value">{campaign.metrics.playlistAdds.after}</div>
+                <div className="campaign-stat-label">Playlists</div>
+                <div className={`campaign-stat-change ${campaign.metrics.playlistAdds.change >= 0 ? 'positive' : 'negative'}`}>
+                  {campaign.metrics.playlistAdds.change >= 0 ? '+' : ''}{campaign.metrics.playlistAdds.change}%
+                </div>
+              </div>
+              <div className="campaign-stat">
+                <div className="campaign-stat-value">{campaign.metrics.radioSpins.after}</div>
+                <div className="campaign-stat-label">Radio Spins</div>
+                <div className={`campaign-stat-change ${campaign.metrics.radioSpins.change >= 0 ? 'positive' : 'negative'}`}>
+                  {campaign.metrics.radioSpins.change >= 0 ? '+' : ''}{campaign.metrics.radioSpins.change}%
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Latest Campaign Insights */}
+        {data.campaigns.history.length > 0 && (
+          <div className="insight-box" style={{marginTop: '20px'}}>
+            <div className="insight-title">Latest Campaign Insight: {data.campaigns.history[0].song}</div>
+            <div className="insight-text">{data.campaigns.history[0].insights}</div>
+
+            {/* Before/After Comparison */}
+            <div className="campaign-comparison">
+              <div className="comparison-box">
+                <div className="comparison-label">Before Campaign</div>
+                <div className="comparison-value">{data.campaigns.history[0].metrics.streams.before.toLocaleString()}</div>
+                <div style={{fontSize: '0.8rem', color: '#8b92a8'}}>streams</div>
+              </div>
+              <div className={`comparison-arrow ${data.campaigns.history[0].metrics.streams.change >= 0 ? '' : 'negative'}`}>
+                {data.campaigns.history[0].metrics.streams.change >= 0 ? '\u2192' : '\u2192'}
+              </div>
+              <div className="comparison-box">
+                <div className="comparison-label">After Campaign</div>
+                <div className="comparison-value" style={{color: '#4caf50'}}>{data.campaigns.history[0].metrics.streams.after.toLocaleString()}</div>
+                <div style={{fontSize: '0.8rem', color: '#4caf50'}}>+{data.campaigns.history[0].metrics.streams.change}%</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px'}}>
