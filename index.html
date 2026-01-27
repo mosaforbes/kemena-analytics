@@ -167,6 +167,101 @@ body {
   border-radius: 8px;
   margin: 15px 0;
 }
+.campaign-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 20px;
+  margin: 20px 0;
+}
+.campaign-card {
+  background: linear-gradient(135deg, #1e2530 0%, #161b26 100%);
+  border-radius: 12px;
+  border: 1px solid #2a3142;
+  overflow: hidden;
+}
+.campaign-header {
+  padding: 20px;
+  border-bottom: 1px solid #2a3142;
+}
+.campaign-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 5px;
+}
+.campaign-artist {
+  font-size: 0.9rem;
+  color: #8b92a8;
+}
+.campaign-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 10px;
+}
+.campaign-status.active {
+  background: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+.campaign-status.completed {
+  background: rgba(102, 126, 234, 0.2);
+  color: #667eea;
+}
+.campaign-status.paused {
+  background: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+}
+.campaign-metrics {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+.campaign-metric {
+  text-align: center;
+}
+.campaign-metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+.campaign-metric-label {
+  font-size: 0.75rem;
+  color: #8b92a8;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+.campaign-periods {
+  padding: 15px 20px;
+  background: rgba(102, 126, 234, 0.05);
+  border-top: 1px solid #2a3142;
+}
+.campaign-period {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 0.85rem;
+}
+.campaign-period-label {
+  color: #8b92a8;
+}
+.campaign-period-dates {
+  color: #667eea;
+  font-weight: 500;
+}
+.campaign-week-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-left: 8px;
+}
 </style>
 </head>
 <body>
@@ -178,7 +273,8 @@ const { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Carte
 
 const KemenaDashboard = () => {
   const [data, setData] = useState(null);
-  
+  const [campaigns, setCampaigns] = useState([]);
+
   useEffect(() => {
     const rawData = {
       timestamp: "2026-01-24T23:01:19",
@@ -212,7 +308,61 @@ const KemenaDashboard = () => {
         stations: 3
       }
     };
-    
+
+    // Song Campaign Data - Track what Kemena is actively pushing
+    const songCampaignsData = [
+      {
+        id: 'casablanca',
+        title: 'Casablanca',
+        artist: 'Kemena',
+        featuring: null,
+        status: 'active', // active, completed, paused
+        periods: [
+          { label: 'Phase 1', start: '2025-12-01', end: '2025-12-21' },
+          { label: 'Phase 2', start: '2026-01-20', end: null } // null = ongoing
+        ],
+        weeklyData: [
+          { week: 'Dec 1-7', streams: 12500, saves: 342, playlistAdds: 8, shares: 156 },
+          { week: 'Dec 8-14', streams: 18200, saves: 487, playlistAdds: 12, shares: 234 },
+          { week: 'Dec 15-21', streams: 22100, saves: 521, playlistAdds: 15, shares: 298 },
+          { week: 'Jan 20-26', streams: 15800, saves: 398, playlistAdds: 10, shares: 187 }
+        ],
+        totalStreams: 68600,
+        totalSaves: 1748,
+        totalPlaylistAdds: 45,
+        peakPosition: 142,
+        currentWeek: 4,
+        insights: {
+          trend: 'Phase 2 showing strong pickup after holiday break',
+          recommendation: 'Consider extending Phase 2 for another week to maintain momentum'
+        }
+      },
+      {
+        id: 'suzana',
+        title: 'Suzana',
+        artist: 'Kemena',
+        featuring: 'Dwin the stoic',
+        status: 'active',
+        periods: [
+          { label: 'Launch', start: '2026-01-27', end: null }
+        ],
+        weeklyData: [
+          { week: 'Jan 27-Feb 2', streams: 0, saves: 0, playlistAdds: 0, shares: 0 }
+        ],
+        totalStreams: 0,
+        totalSaves: 0,
+        totalPlaylistAdds: 0,
+        peakPosition: null,
+        currentWeek: 1,
+        insights: {
+          trend: 'Campaign launching this week',
+          recommendation: 'Focus on pre-save campaign and playlist pitching'
+        }
+      }
+    ];
+
+    setCampaigns(songCampaignsData);
+
     const insights = generateInsights(rawData);
     setData({ ...rawData, insights });
     
@@ -394,6 +544,178 @@ const KemenaDashboard = () => {
           <div className="kpi-label">Momentum Score</div>
           <div className="kpi-value">{data.insights.executive.momentum_score}</div>
           <div style={{fontSize: '0.85rem', color: '#8b92a8'}}>Out of 100</div>
+        </div>
+      </div>
+
+      {/* Active Song Campaigns Section */}
+      <div className="section">
+        <div className="section-title">
+          Active Song Campaigns
+          <span style={{fontSize: '0.9rem', color: '#8b92a8', fontWeight: 400, marginLeft: '15px'}}>
+            {campaigns.filter(c => c.status === 'active').length} active
+          </span>
+        </div>
+
+        <div className="campaign-grid">
+          {campaigns.map(campaign => (
+            <div key={campaign.id} className="campaign-card">
+              <div className="campaign-header">
+                <div className="campaign-title">
+                  {campaign.title}
+                  <span className="campaign-week-badge">Week {campaign.currentWeek}</span>
+                </div>
+                <div className="campaign-artist">
+                  {campaign.artist}{campaign.featuring && ` ft. ${campaign.featuring}`}
+                </div>
+                <div className={`campaign-status ${campaign.status}`}>
+                  {campaign.status}
+                </div>
+              </div>
+
+              <div className="campaign-metrics">
+                <div className="campaign-metric">
+                  <div className="campaign-metric-value">
+                    {campaign.totalStreams > 0 ? `${(campaign.totalStreams / 1000).toFixed(1)}K` : '—'}
+                  </div>
+                  <div className="campaign-metric-label">Total Streams</div>
+                </div>
+                <div className="campaign-metric">
+                  <div className="campaign-metric-value">
+                    {campaign.totalSaves > 0 ? campaign.totalSaves.toLocaleString() : '—'}
+                  </div>
+                  <div className="campaign-metric-label">Saves</div>
+                </div>
+                <div className="campaign-metric">
+                  <div className="campaign-metric-value">
+                    {campaign.totalPlaylistAdds > 0 ? campaign.totalPlaylistAdds : '—'}
+                  </div>
+                  <div className="campaign-metric-label">Playlist Adds</div>
+                </div>
+                <div className="campaign-metric">
+                  <div className="campaign-metric-value">
+                    {campaign.peakPosition ? `#${campaign.peakPosition}` : '—'}
+                  </div>
+                  <div className="campaign-metric-label">Peak Position</div>
+                </div>
+              </div>
+
+              <div className="campaign-periods">
+                {campaign.periods.map((period, idx) => (
+                  <div key={idx} className="campaign-period">
+                    <span className="campaign-period-label">{period.label}</span>
+                    <span className="campaign-period-dates">
+                      {new Date(period.start).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      {' — '}
+                      {period.end
+                        ? new Date(period.end).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+                        : 'Ongoing'
+                      }
+                    </span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="insight-box" style={{margin: '15px', marginTop: '0'}}>
+                <div style={{fontSize: '0.85rem', color: '#667eea', fontWeight: 600, marginBottom: '5px'}}>
+                  Campaign Insight
+                </div>
+                <div style={{fontSize: '0.85rem', color: '#c5c9d6'}}>
+                  {campaign.insights.recommendation}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Campaign Performance Chart */}
+      {campaigns.length > 0 && campaigns[0].weeklyData.length > 1 && (
+        <div className="section">
+          <div className="section-title">Campaign Performance Trends</div>
+          <ResponsiveContainer width="100%" height={350}>
+            <LineChart data={campaigns[0].weeklyData}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#2a3142" />
+              <XAxis dataKey="week" stroke="#8b92a8" tick={{fontSize: 12}} />
+              <YAxis stroke="#8b92a8" />
+              <Tooltip
+                contentStyle={{background: '#1e2530', border: '1px solid #2a3142', borderRadius: '8px'}}
+                labelStyle={{color: '#fff', fontWeight: 600}}
+              />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="streams"
+                stroke="#667eea"
+                strokeWidth={3}
+                dot={{fill: '#667eea', strokeWidth: 2}}
+                name="Streams"
+              />
+              <Line
+                type="monotone"
+                dataKey="saves"
+                stroke="#4caf50"
+                strokeWidth={2}
+                dot={{fill: '#4caf50', strokeWidth: 2}}
+                name="Saves"
+              />
+              <Line
+                type="monotone"
+                dataKey="shares"
+                stroke="#f093fb"
+                strokeWidth={2}
+                dot={{fill: '#f093fb', strokeWidth: 2}}
+                name="Shares"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+          <div style={{textAlign: 'center', marginTop: '10px', color: '#8b92a8', fontSize: '0.85rem'}}>
+            Showing: Casablanca weekly performance
+          </div>
+        </div>
+      )}
+
+      {/* Campaign Comparison */}
+      <div className="section">
+        <div className="section-title">Campaign Comparison</div>
+        <div style={{overflowX: 'auto'}}>
+          <table style={{width: '100%', borderCollapse: 'collapse', fontSize: '0.9rem'}}>
+            <thead>
+              <tr style={{borderBottom: '2px solid #2a3142'}}>
+                <th style={{textAlign: 'left', padding: '15px 10px', color: '#8b92a8', fontWeight: 500}}>Song</th>
+                <th style={{textAlign: 'right', padding: '15px 10px', color: '#8b92a8', fontWeight: 500}}>Status</th>
+                <th style={{textAlign: 'right', padding: '15px 10px', color: '#8b92a8', fontWeight: 500}}>Weeks</th>
+                <th style={{textAlign: 'right', padding: '15px 10px', color: '#8b92a8', fontWeight: 500}}>Streams</th>
+                <th style={{textAlign: 'right', padding: '15px 10px', color: '#8b92a8', fontWeight: 500}}>Saves</th>
+                <th style={{textAlign: 'right', padding: '15px 10px', color: '#8b92a8', fontWeight: 500}}>Avg/Week</th>
+              </tr>
+            </thead>
+            <tbody>
+              {campaigns.map(campaign => (
+                <tr key={campaign.id} style={{borderBottom: '1px solid #2a3142'}}>
+                  <td style={{padding: '15px 10px', color: '#fff', fontWeight: 600}}>
+                    {campaign.title}
+                    {campaign.featuring && <span style={{color: '#8b92a8', fontWeight: 400}}> ft. {campaign.featuring}</span>}
+                  </td>
+                  <td style={{textAlign: 'right', padding: '15px 10px'}}>
+                    <span className={`campaign-status ${campaign.status}`}>{campaign.status}</span>
+                  </td>
+                  <td style={{textAlign: 'right', padding: '15px 10px', color: '#fff'}}>{campaign.currentWeek}</td>
+                  <td style={{textAlign: 'right', padding: '15px 10px', color: '#fff'}}>
+                    {campaign.totalStreams > 0 ? campaign.totalStreams.toLocaleString() : '—'}
+                  </td>
+                  <td style={{textAlign: 'right', padding: '15px 10px', color: '#fff'}}>
+                    {campaign.totalSaves > 0 ? campaign.totalSaves.toLocaleString() : '—'}
+                  </td>
+                  <td style={{textAlign: 'right', padding: '15px 10px', color: '#667eea', fontWeight: 600}}>
+                    {campaign.totalStreams > 0
+                      ? `${(campaign.totalStreams / campaign.currentWeek / 1000).toFixed(1)}K`
+                      : '—'
+                    }
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 
