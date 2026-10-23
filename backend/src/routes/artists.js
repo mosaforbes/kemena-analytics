@@ -36,7 +36,9 @@ router.get('/:artistId', async (req, res) => {
 router.get('/:artistId/metrics', async (req, res) => {
   try {
     const artist = await getOrCreateArtist(req.params.artistId);
-    const days = req.query.days || 30;
+    // Whole number of days between 1 and 365; anything else falls back to 30.
+    const parsed = Number.parseInt(req.query.days, 10);
+    const days = parsed >= 1 && parsed <= 365 ? parsed : 30;
     
     const history = await getMetricsHistory(artist.id, days);
     const growth = await calculateGrowth(artist.id, days);

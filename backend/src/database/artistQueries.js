@@ -96,9 +96,9 @@ export const getMetricsHistory = async (artistId, days = 30) => {
     const result = await query(
       `SELECT * FROM metrics 
        WHERE artist_id = $1 
-       AND metric_date >= NOW() - INTERVAL '${days} days'
+       AND metric_date >= NOW() - make_interval(days => $2)
        ORDER BY metric_date DESC`,
-      [artistId]
+      [artistId, days]
     );
 
     return result.rows;
@@ -143,9 +143,9 @@ export const calculateGrowth = async (artistId, days = 30) => {
          FIRST_VALUE(youtube_subscribers) OVER (ORDER BY metric_date ASC)) as youtube_change
        FROM metrics 
        WHERE artist_id = $1 
-       AND metric_date >= NOW() - INTERVAL '${days} days'
+       AND metric_date >= NOW() - make_interval(days => $2)
        LIMIT 1`,
-      [artistId]
+      [artistId, days]
     );
 
     return result.rows[0] || null;
